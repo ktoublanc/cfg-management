@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
+ * The test case for the config reader class
  * Created by kevin on 04/01/2016.
  */
 public class ConfigReaderTestCase {

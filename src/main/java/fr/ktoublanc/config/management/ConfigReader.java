@@ -1,7 +1,5 @@
 package fr.ktoublanc.config.management;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -14,6 +12,12 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
+ * Reads Properties files from a resource name
+ * Configuration Reader class which loads configuration files as described below:
+ * <ul>
+ *  <li>Try to get the resource name first and loads the properties if found</li>
+ *  <li>Try to get the resource name directory by appending '.d' and the end of the resource and loads all properties in it which matches the following format "[0-9]_.*"</li>
+ * </ul>
  * Created by kevin on 04/01/2016.
  */
 public class ConfigReader {
@@ -21,7 +25,7 @@ public class ConfigReader {
     private final String resourceName;
     private final Properties properties = new Properties();
 
-    public ConfigReader(@NotNull final String resourceName) throws IOException {
+    public ConfigReader(final String resourceName) throws IOException {
         Objects.requireNonNull(resourceName, "Can not load configuration for null resource name");
 
         this.resourceName = resourceName;
@@ -53,7 +57,7 @@ public class ConfigReader {
         }
     }
 
-    private void loadFiles(@NotNull final Path directoryPath) throws IOException {
+    private void loadFiles(final Path directoryPath) throws IOException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directoryPath)) {
             for (Path path : stream) {
                 final String fileName = path.getFileName().toString();
@@ -65,15 +69,13 @@ public class ConfigReader {
         }
     }
 
-    private void loadFile(@NotNull final Path path) throws IOException {
+    private void loadFile(final Path path) throws IOException {
         try (final InputStream stream = Files.newInputStream(path)) {
             properties.load(stream);
-        } catch (IOException e) {
-            throw new IOException("Unable to lead configuration file: " + path.getFileName());
         }
     }
 
-    public String retrieve(@NotNull final String key) {
+    public String retrieve(final String key) {
         return properties.getProperty(key);
     }
 }
